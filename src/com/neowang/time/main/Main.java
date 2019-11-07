@@ -1,13 +1,36 @@
 package com.neowang.time.main;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+import com.neowang.socket.control.task;
+import com.neowang.socket.server.serverutil;
+import com.neowang.socket.server.tcpserver;
+
 //import com.neowang.time.delay.delay;
 //import com.neowang.time.delay.time;
 
-public class Main {
+public class Main {	
+	
+	public static void main(String[] args) throws IOException {
+		
+		System.out.println("¿ªÊ¼²âÊÔ");
+		
+		ServerSocket server = new ServerSocket(12345);
+		
+		while (true) {
+			Socket client = server.accept();
+			tcpserver tcp = new tcpserver(client); 
+			serverutil serverthread = new serverutil(tcp);
+			new Thread(serverthread,"test server").start();;
+			
+			new task(tcp).start();
+		}
+		
+		
+	}	
 
-	
-	
-	
 	
 	
 	

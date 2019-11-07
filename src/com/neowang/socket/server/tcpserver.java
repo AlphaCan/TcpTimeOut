@@ -21,12 +21,13 @@ public class tcpserver{
 	
 	public void get_tcp_data() {
 		int temp = 0;
-		
+		System.out.println("‘À––¡À£ø");
 		try {
 			in = server.getInputStream();
 			while(true) {
 				
 				temp = in.read();
+				System.out.println(temp);
 				if(temp == -1) return;
 				
 				if((status&0x8000) == 0) {
@@ -86,6 +87,10 @@ public class tcpserver{
 	
 	public byte[] get_tcp_receive_buffer() {
 		return tcp_receive_buffer;
+	}
+	
+	public void clear_tcp_receive_buffer() {
+		tcp_receive_buffer = null;
 	}
 	
 	public int get_receive_status() {
