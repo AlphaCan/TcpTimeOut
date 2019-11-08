@@ -14,7 +14,8 @@ public class serverutil implements Runnable  {
 	public void run() {
 		System.out.println(Thread.currentThread().getName());
 		while (true) {
-			clientsocket.get_tcp_receive_buffer();
+			
+			clientsocket.get_tcp_data();
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {

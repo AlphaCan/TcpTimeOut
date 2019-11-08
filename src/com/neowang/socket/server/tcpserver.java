@@ -7,45 +7,54 @@ import java.net.Socket;
 
 public class tcpserver{
 	
-	private int tcp_max_buffer_size = 1024;
-	private byte[] tcp_receive_buffer = new byte[tcp_max_buffer_size];
-	private int status = 0;
+	private int tcp_max_buffer_size ;
+	private byte tcp_receive_buffer[] ;
+	private int status;
 	
 	Socket server;
 	InputStream in;
 	OutputStream out;
 	
 	public tcpserver(Socket socket) {		
-		this.server = socket;	
+		this.server = socket;
+		this.tcp_max_buffer_size = 1024;
+		this.status = 0;
+		this.tcp_receive_buffer = new byte[tcp_max_buffer_size];
+		
 	}	
 	
 	public void get_tcp_data() {
 		int temp = 0;
-		System.out.println("运行了？");
+		System.out.println("在tcp接收函数里面");
 		try {
-			in = server.getInputStream();
+			
 			while(true) {
-				
+				in = server.getInputStream();
 				temp = in.read();
-				System.out.println(temp);
 				if(temp == -1) return;
-				
+				System.out.println(temp);
 				if((status&0x8000) == 0) {
 					if((status&0x4000) == 1) {
 						if(temp != 0x0a) status = 0;
 						else 
 							status |= 0x8000;
 					}
-				}
-				else {
-					if (temp == 0x0d) status |= 0x4000;
 					else {
-						tcp_receive_buffer[status&0x3fff] = (byte)temp;
-						status++;
-						if((status&0x3fff) > tcp_max_buffer_size -1) status = 0;
-					}
-				}								
-				
+						if (temp == 0x0d) status |= 0x4000;
+						else {
+							
+							System.out.println(status);
+							System.out.println(tcp_receive_buffer[0]);
+							this.tcp_receive_buffer[(status&0x3fff)] = (byte)(temp&0xff);
+							
+							status++;
+							if((status&0x3fff) > tcp_max_buffer_size -1) status = 0;
+							System.out.println(status);
+						}
+					}	
+				}
+											
+				System.out.println(tcp_receive_buffer);
 			}
 						
 		} catch (IOException e) {
