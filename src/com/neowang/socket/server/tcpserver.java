@@ -5,11 +5,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+
+
 public class tcpserver{
 	
-	private int tcp_max_buffer_size ;
-	private byte tcp_receive_buffer[] ;
-	private int status;
+	private int tcp_max_buffer_size = 1024 ;
+	private byte[] tcp_receive_buffer = new byte[1024];
+	private int status = 0;
+	
 	
 	Socket server;
 	InputStream in;
@@ -17,46 +20,37 @@ public class tcpserver{
 	
 	public tcpserver(Socket socket) {		
 		this.server = socket;
-		this.tcp_max_buffer_size = 1024;
-		this.status = 0;
-		this.tcp_receive_buffer = new byte[tcp_max_buffer_size];
 		
 	}	
 	
 	public void get_tcp_data() {
 		int temp = 0;
-		System.out.println("在tcp接收函数里面");
 		try {
-			
+			in = server.getInputStream();
 			while(true) {
-				in = server.getInputStream();
+				
 				temp = in.read();
 				if(temp == -1) return;
-				System.out.println(temp);
-				if((status&0x8000) == 0) {
-					if((status&0x4000) == 1) {
-						if(temp != 0x0a) status = 0;
-						else 
+				if((status&0x8000) == 0)
+				{
+					if((status&0x4000) == 0x4000)
+					{
+						if(temp == 0x0a) 
 							status |= 0x8000;
+						else 
+							status = 0;
 					}
 					else {
-						if (temp == 0x0d) status |= 0x4000;
-						else {
-							
-							System.out.println(status);
-							System.out.println(tcp_receive_buffer[0]);
-							this.tcp_receive_buffer[(status&0x3fff)] = (byte)(temp&0xff);
-							
+						if (temp == 0x0d) 
+							status |= 0x4000;
+						else {							
+							tcp_receive_buffer[(status&0x3fff)] = (byte)(temp&0xff);							
 							status++;
 							if((status&0x3fff) > tcp_max_buffer_size -1) status = 0;
-							System.out.println(status);
 						}
-					}	
-				}
-											
-				System.out.println(tcp_receive_buffer);
-			}
-						
+					}
+				}											
+			}						
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("tcp接收数据出错");
@@ -99,7 +93,9 @@ public class tcpserver{
 	}
 	
 	public void clear_tcp_receive_buffer() {
-		tcp_receive_buffer = null;
+		for (int i = 0; i < tcp_max_buffer_size; i++) {
+			tcp_receive_buffer[i] = 0;
+		}
 	}
 	
 	public int get_receive_status() {

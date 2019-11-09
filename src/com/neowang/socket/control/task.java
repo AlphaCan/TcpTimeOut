@@ -13,20 +13,24 @@ public class task extends Thread{
 
 	@Override
 	public void run() {
-		if ((socket.get_receive_status()&0x8000) == 1) {
-			int length = socket.get_receive_status()&0x3fff;
-			if(length > 0) {
-				System.out.println(new String(socket.get_tcp_receive_buffer(),0,length));
+		while (true) {
+			if ((socket.get_receive_status()&0x8000) == 0x8000) {
+				
+				int length = socket.get_receive_status()&0x3fff;
+				if(length > 0) {
+					System.out.println(new String(socket.get_tcp_receive_buffer(),0,length));
+				}
+				socket.set_receive_status(0);
+				socket.clear_tcp_receive_buffer();
 			}
-		}
-		socket.set_receive_status(0);
-		socket.clear_tcp_receive_buffer();
-		
-		try {
-			Thread.sleep(150);
-		} catch (InterruptedException e) {
 			
-			e.printStackTrace();
+			
+			try {
+				Thread.sleep(150);
+			} catch (InterruptedException e) {
+				
+				e.printStackTrace();
+			}
 		}
 	}
 	
