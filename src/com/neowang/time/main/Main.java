@@ -8,7 +8,6 @@ import com.neowang.socket.control.task;
 import com.neowang.socket.server.serverutil;
 import com.neowang.socket.server.tcpserver;
 
-import sun.security.util.math.intpoly.IntegerPolynomialP256;
 
 //import com.neowang.time.delay.delay;
 //import com.neowang.time.delay.time;
@@ -30,6 +29,14 @@ public class Main {
 			new task(tcp).start();
 		}
 		
+//		byte[] a = {'r',1,2,3};
+//		StringBuilder string = new StringBuilder();
+//		for (byte b : a) {
+//			string.append(b);
+//		}
+//		String str = string.toString();
+//		System.out.println(new String(a));
+//		
 		
 	}	
 
